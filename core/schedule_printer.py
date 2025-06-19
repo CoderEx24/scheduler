@@ -1,7 +1,7 @@
 # schedule_printer.py
 
-from data_models import Class
-from timetable import TimeTable
+from .data_models import Class
+from .timetable import TimeTable
 from typing import List
 import json
 import os

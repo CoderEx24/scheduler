@@ -1,6 +1,6 @@
-from timetable import TimeTable
-from genetic_algorithm import GeneticAlgorithm
-from schedule_printer import print_schedule
+from core.timetable import TimeTable
+from core.genetic_algorithm import GeneticAlgorithm
+from core.schedule_printer import print_schedule
 def main():
     timetable = TimeTable()
     ga = GeneticAlgorithm(timetable)

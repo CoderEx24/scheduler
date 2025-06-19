@@ -2,7 +2,7 @@
 import json
 import os
 from typing import List
-from data_models import Room, Instructor, Course, Group, Class, TimeRange
+from .data_models import Room, Instructor, Course, Group, Class, TimeRange
 
 class TimeTable:
     def __init__(self):
@@ -15,7 +15,7 @@ class TimeTable:
         self.load_data_from_files()
 
     def load_data_from_files(self):
-        base_dir = os.path.dirname(os.path.abspath(__file__))
+        base_dir = os.path.dirname(os.path.abspath(__file__)) + '/../etc/'
 
         rooms_file = os.path.join(base_dir, 'input_data/rooms.json')
         instructors_file = os.path.join(base_dir, 'input_data/instructors.json')

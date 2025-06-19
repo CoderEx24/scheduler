@@ -1,7 +1,7 @@
 # genetic_algorithm.py
 
-from data_models import TimeRange, Class
-from timetable import TimeTable
+from .data_models import TimeRange, Class
+from .timetable import TimeTable
 from typing import List, Dict
 import random
 from pathos.multiprocessing import ProcessingPool as Pool
