@@ -1,0 +1,120 @@
+<ClassroomEntry>:
+  Label:
+    text: root.data
+    size_hint_x: 9
+
+  Button:
+    text: 'Remove'
+    size_hint_x: 2
+
+<CoursesTab>:
+  orientation: 'vertical'
+
+  __safe_id: [classroom.__self__, session_type.__self__]
+
+  Widget:
+    size_hint: 0, 0
+    on_parent: 
+      session_type.dismiss()
+      classroom.dismiss()
+      room_type.dismiss()
+      
+  TextInput:
+    hint_text: 'Search'
+    on_text: root.filter_classrooms(self.text)
+    multiline: False
+
+  BoxLayout:
+    Button:
+      id: classroom_btn 
+      text: 'Classroom'
+      on_release: classroom.open(self)
+      size_hint: 7, None
+      height: '48dp'
+
+    DropDown:
+      id: classroom
+      size_hint_x: 7
+      on_select: root.selected_classroom = classroom_btn.text = args[1]
+      
+    Button:
+      id: session_type_btn 
+      text: 'Session'
+      on_release: session_type.open(self)
+      size_hint: 3, None
+      height: '48dp'
+
+    DropDown:
+      id: session_type
+      size_hint_x: 3
+      on_select: root.session_type = session_type_btn.text = args[1]
+      
+      Button:
+        text: 'Lecture'
+        size_hint_y: None
+        height: '48dp'
+        on_release: session_type.select('Lecture')
+
+      Button:
+        text: 'Tutorial'
+        size_hint_y: None
+        height: '48dp'
+        on_release: session_type.select('Tutorial')
+
+      Button:
+        text: 'Lab'
+        size_hint_y: None
+        height: '48dp'
+        on_release: session_type.select('Lab')
+
+    Button:
+      id: room_type_btn 
+      text: 'Room Type'
+      on_release: room_type.open(self)
+      size_hint: 3, None
+      height: '48dp'
+
+    DropDown:
+      id: room_type
+      size_hint_x: 3
+      on_select: root.room_type = room_type_btn.text = args[1]
+
+      Button:
+        text: 'Classroom'
+        size_hint_y: None
+        height: '48dp'
+        on_release: room_type.select('classroom')
+
+      Button:
+        text: 'Computer Lab'
+        size_hint_y: None
+        height: '48dp'
+        on_release: room_type.select('computer_lab')
+
+      Button:
+        text: 'Physics Lab'
+        size_hint_y: None
+        height: '48dp'
+        on_release: room_type.select('physics_lab')
+
+      Button:
+        text: 'Chemistry Lab'
+        size_hint_y: None
+        height: '48dp'
+        on_release: room_type.select('chemistry_lab')
+
+    Button:
+      text: 'Add'
+      size_hint_x: 1
+
+  RecycleView:
+    id: classrooms
+    size_hint_y: 10
+    viewclass: 'ClassroomEntry'
+
+    RecycleBoxLayout:
+      default_size: None, dp(56)
+      default_size_hint: 1, None
+      size_hint_y: None
+      height: self.minimum_height
+      orientation: 'vertical'
