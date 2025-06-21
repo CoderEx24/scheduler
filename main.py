@@ -30,24 +30,21 @@ class MainApp(App):
 
     def fetch_classrooms(self):
         try:
-            classrooms = requests \
-                            .get('http://127.0.0.1:8000/api/classroom/dump') \
-                            .json()
+            self.classrooms = requests \
+                .get('http://127.0.0.1:8000/api/classroom/dump') \
+                .json()
         except:
             pass
-        else:
-            self.classrooms = [
-                Course(
-                    id=i,
-                    code='',
-                    name=c['course']['title'],
-                    required_room_type='',
-                    allowed_instructors=[],
-                    session_type='',
-                    duration=0,
-                )
-                for i, c in enumerate(classrooms)
-            ]
+
+    def on_start(self):
+        self.fetch_professors()
+        self.fetch_classrooms()
+
+
+        print(f'there are {len(self.classrooms)} classrooms and {len(self.professors)} professors')
+        print(self.classrooms)
+        print(self.professors)
+
 
 if __name__ == '__main__':
     MainApp().run()
