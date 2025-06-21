@@ -40,7 +40,7 @@ class GroupPopup(Popup):
     def __init__(self, group, **kwargs):
         super(GroupPopup, self).__init__(**kwargs)
         self.group = group
-        self.ids.session.values = [
+        self.ids.group_session.values = [
             c['name'] for c in App.get_running_app().classrooms
         ]
 
@@ -62,17 +62,17 @@ class GroupPopup(Popup):
         session = session[0]
 
         self.group.session_ids.append(session.id)
-        self.ids.sessions.data.append({ 'session': session })
-        self.ids.session.values.remove(session_name)
+        self.ids.group_sessions.data.append({ 'session': session })
+        self.ids.group_session.values.remove(session_name)
 
     def add_section(self, section_name):
         section_id = random.random()
         new_section = Group(
-            id=int(group.id) + section_id,
+            id=int(self.group.id) + section_id,
             major=0,
             year=0,
             specialization='',
-            group_name=f'{group.group_name} - {section_name}',
+            group_name=f'{self.group.group_name} - {section_name}',
             section=f'{section_id}',
             session_ids=[],
         )
@@ -88,7 +88,7 @@ class GroupPopup(Popup):
 
         session = list(filter(
             lambda s: s.name == session_name and s.section_type == section_name.lower(),
-            App.get_running_app().session
+            App.get_running_app().sessions
         ))
 
         if len(section) != 1 or len(session) != 1:

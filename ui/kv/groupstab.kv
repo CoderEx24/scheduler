@@ -56,18 +56,18 @@
         BoxLayout:
           size_hint_y: 1
           Spinner:
-            id: session
+            id: group_session
             text: 'Classroom (Lecture)'
             size_hint_x: 10
 
           Button:
             text: 'Add'
             size_hint_x: 1
-            on_press: root.add_lecture_session(session.text)
+            on_press: root.add_lecture_session(group_session.text)
 
         RecycleView:
           id: group_sessions
-          size_hint_x: 10
+          size_hint_y: 10
           viewclass: 'GroupPopupGroupSessionEntry'
 
           RecycleBoxLayout:
@@ -93,7 +93,7 @@
           TextInput:
             id: section_name
             multiline: False
-            text_hint: 'Section Name'
+            hint_text: 'Section Name'
             size_hint_x: 10
 
           Button:
