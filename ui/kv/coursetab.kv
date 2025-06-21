@@ -1,6 +1,6 @@
 <ClassroomEntry>:
   Label:
-    text: root.data
+    id: classroom_name
     size_hint_x: 9
 
   Button:
@@ -10,7 +10,7 @@
 <CoursesTab>:
   orientation: 'vertical'
 
-  __safe_id: [classroom.__self__, session_type.__self__]
+  __safe_id: [classroom.__self__, session_type.__self__, room_type.__self__]
 
   Widget:
     size_hint: 0, 0
@@ -27,7 +27,7 @@
   BoxLayout:
     Button:
       id: classroom_btn 
-      text: 'Classroom'
+      text: self.text or 'Classroom'
       on_release: classroom.open(self)
       size_hint: 7, None
       height: '48dp'
@@ -35,11 +35,11 @@
     DropDown:
       id: classroom
       size_hint_x: 7
-      on_select: root.selected_classroom = classroom_btn.text = args[1]
+      on_select: root.selected_classroom = args[1]; classroom_btn.text = args[1].name if args[1] else ''
       
     Button:
       id: session_type_btn 
-      text: 'Session'
+      text: self.text or 'Session'
       on_release: session_type.open(self)
       size_hint: 3, None
       height: '48dp'
@@ -69,7 +69,7 @@
 
     Button:
       id: room_type_btn 
-      text: 'Room Type'
+      text: self.text or 'Room Type'
       on_release: room_type.open(self)
       size_hint: 3, None
       height: '48dp'
@@ -106,6 +106,7 @@
     Button:
       text: 'Add'
       size_hint_x: 1
+      on_press: root.add_classroom()
 
   RecycleView:
     id: classrooms
