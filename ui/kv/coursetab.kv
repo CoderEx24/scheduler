@@ -1,6 +1,10 @@
 <ClassroomEntry>:
   Label:
-    id: classroom_name
+    id: session_type
+    size_hint_x: 1
+
+  Label:
+    id: session_name
     size_hint_x: 9
 
   Button:
@@ -19,10 +23,16 @@
       classroom.dismiss()
       room_type.dismiss()
       
-  TextInput:
-    hint_text: 'Search'
-    on_text: root.filter_classrooms(self.text)
-    multiline: False
+  BoxLayout:
+    TextInput:
+      hint_text: 'Search'
+      on_text: root.filter_sessions(self.text)
+      multiline: False
+      size_hint_x: 9
+
+    Button:
+      text: 'refresh'
+      on_press: root.refresh_sessions(); root.refresh_classrooms()
 
   BoxLayout:
     Button:
@@ -35,7 +45,7 @@
     DropDown:
       id: classroom
       size_hint_x: 7
-      on_select: root.selected_classroom = args[1]; classroom_btn.text = args[1].name if args[1] else ''
+      on_select: root.selected_classroom = args[1]; classroom_btn.text = args[1]['name'] if args[1] else ''
       
     Button:
       id: session_type_btn 
@@ -83,7 +93,7 @@
         text: 'Classroom'
         size_hint_y: None
         height: '48dp'
-        on_release: room_type.select('classroom')
+        on_release: room_type.select('session')
 
       Button:
         text: 'Computer Lab'
@@ -106,13 +116,13 @@
     Button:
       text: 'Add'
       size_hint_x: 1
-      on_press: root.add_classroom()
+      on_press: root.add_session()
 
   RecycleView:
-    id: classrooms
+    id: sessions
     size_hint_y: 10
     viewclass: 'ClassroomEntry'
-
+    
     RecycleBoxLayout:
       default_size: None, dp(56)
       default_size_hint: 1, None

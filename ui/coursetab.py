@@ -1,18 +1,20 @@
 from kivy.uix.recycleview.views import RecycleDataViewBehavior
-from kivy.properties import StringProperty, ListProperty, ObjectProperty
+from kivy.properties import StringProperty, ListProperty, ObjectProperty, BooleanProperty
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.widget import Widget
 from kivy.uix.button import Button
 from kivy.lang import Builder
 from kivy.app import App
 from os import path
-from weakref import proxy
+
+from core.data_models import Session
 
 Builder.load_file(path.join(path.dirname(__file__), 'kv', 'coursetab.kv'))
 
 class ClassroomEntry(RecycleDataViewBehavior, BoxLayout):
     def refresh_view_attrs(self, rv, index, data):
-        self.ids.classroom_name.text = data['classroom'].name
+        self.ids.session_type.text = data['session'].session_type
+        self.ids.session_name.text = data['session'].name
         return super(ClassroomEntry, self).refresh_view_attrs(rv, index, data)
 
 class CoursesTab(BoxLayout):
@@ -20,13 +22,10 @@ class CoursesTab(BoxLayout):
     session_type = StringProperty()
     room_type = StringProperty()
 
-    def on_parent(self, *args):
-        if len(self.ids.classrooms.data) > 0:
-            return
-
-        for i, classroom in enumerate(App.get_running_app().classrooms):
+    def refresh_classrooms(self):
+        for classroom in App.get_running_app().classrooms:
             new_button = Button(
-                text=classroom.name,
+                text=classroom['name'],
                 size_hint_y=None,
                 height='48dp',
             )
@@ -34,36 +33,45 @@ class CoursesTab(BoxLayout):
             new_button.bind(on_release=lambda btn, c=classroom: self.ids.classroom.select(c))
             self.ids.classroom.add_widget(new_button)
 
-    def filter_classrooms(self, text):
-        classrooms = App.get_running_app().classrooms
+    def refresh_sessions(self):
+        self.ids.sessions.data = [
+            { 'session': s } for s in App.get_running_app().sessions
+        ]
+
+    def filter_sessions(self, text):
+        sessions = App.get_running_app().sessions
         text = text.strip()
 
         if len(text) == 0:
-            self.ids.classrooms.data = [
-                { 'classroom': c } for c in classrooms
+            self.ids.sessions.data = [
+                { 'session': c } for c in sessions
             ]
         else:
             filtered_data = filter(
                 lambda d: text in d.name,
-                classrooms
+                sessions
             )
 
-            self.ids.classrooms.data = [
-                { 'classroom': c } for c in filtered_data
+            self.ids.sessions.data = [
+                { 'session': c } for c in filtered_data
             ]
 
 
-    def add_classroom(self):
+    def add_session(self):
         if not (self.selected_classroom and self.session_type and self.room_type):
             return
 
-        self.selected_classroom.session_type = self.session_type
-        self.selected_classroom.room_type = self.room_type
-        self.ids.classrooms.data.append(
-            { 'classroom': self.selected_classroom }
+        import random
+        new_session = Session(
+            id=random.randint(1, 10**6),
+            code='CODE',
+            name=self.selected_classroom['name'],
+            session_type=self.session_type,
+            required_room_type=self.room_type,
+            allowed_instructors=[],
+            duration=0,
         )
 
-        self.ids.classroom.select(None)
-        self.ids.session_type.select('')
-        self.ids.room_type.select('')
+        App.get_running_app().sessions.append(new_session)
+        self.refresh_sessions()
 
