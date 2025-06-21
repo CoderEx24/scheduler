@@ -1,5 +1,34 @@
 #: import Factory kivy.factory.Factory
 
+<GroupPopupSectionEntry>:
+  Label:
+    id: section_name
+    size_hint_x: 10
+
+  Button:
+    text: 'Select'
+    on_press: self.parent.parent.parent.select_section(section_name.text)
+    size_hint_x: 1
+
+  Button:
+    text: 'Remove'
+    size_hint_x: 1
+
+
+<GroupPopupSectionSessionEntry>:
+  Label:
+    id: section_session_type
+    size_hint_x: 2
+
+  Label:
+    id: section_session_name
+    size_hint_x: 7
+
+  Button:
+    text: 'Remove'
+    size_hint_x: 1
+
+
 <GroupPopupGroupSessionEntry>:
   Label:
     id: session_name
@@ -19,7 +48,7 @@
     do_default_tab: False
 
     TabbedPanelItem:
-      text: 'Group Sessions'
+      text: 'Group\nSessions'
 
       BoxLayout:
         orientation: 'vertical'
@@ -37,9 +66,9 @@
             on_press: root.add_lecture_session(session.text)
 
         RecycleView:
-          id: sessions
+          id: group_sessions
+          size_hint_x: 10
           viewclass: 'GroupPopupGroupSessionEntry'
-          size_hint_y: 10
 
           RecycleBoxLayout:
             default_size: None, dp(56)
@@ -47,13 +76,86 @@
             size_hint_y: None
             height: self.minimum_height
             orientation: 'vertical'
-
+            
         Button:
           text: 'Return'
           on_press: root.dismiss()
 
     TabbedPanelItem:
       text: 'Sections'
+
+      BoxLayout:
+        orientation: 'vertical'
+
+        BoxLayout:
+          size_hint_y: 1
+
+          TextInput:
+            id: section_name
+            multiline: False
+            text_hint: 'Section Name'
+            size_hint_x: 10
+
+          Button:
+            text: 'Add\nSection'
+            on_press: root.add_section(section_name.text)
+            size_hint_x: 1
+
+        BoxLayout:
+          size_hint_y: 1
+
+          Spinner:
+            id: section
+            text: 'Section'
+            size_hint_x: 5
+
+          Spinner:
+            id: session
+            text: 'Session'
+            size_hint_x: 3
+
+          Spinner:
+            id: session_type
+            text: 'Session Type'
+            size_hint_x: 3
+            values: 'Tutorial', 'Lab'
+
+          Button:
+            text: 'Add\nSession'
+            size_hint_x: 1
+            on_press: root.add_session_to_section(section.text, session.text, session_type.text)
+
+        BoxLayout:
+          size_hint_y: 10
+
+          RecycleView:
+            id: sections 
+            viewclass: 'GroupPopupSectionEntry'
+            size_hint_y: 10
+
+            RecycleBoxLayout:
+              default_size: None, dp(56)
+              default_size_hint: 1, None
+              size_hint_y: None
+              height: self.minimum_height
+              orientation: 'vertical'
+
+          RecycleView:
+            id: section_sessions
+            viewclass: 'GroupPopupSectionSessionEntry'
+            size_hint_y: 10
+
+            RecycleBoxLayout:
+              default_size: None, dp(56)
+              default_size_hint: 1, None
+              size_hint_y: None
+              height: self.minimum_height
+              orientation: 'vertical'
+
+
+        Button:
+          text: 'Return'
+          on_press: root.dismiss()
 
 
 <GroupEntry>:
@@ -85,6 +187,10 @@
       text: 'Add\nGroup'
       size_hint_x: 2
       on_press: root.create_group(group_name.text)
+
+    Button:
+      text: 'Refresh'
+      on_press: root.refresh_groups()
 
   RecycleView:
     id: groups

@@ -12,6 +12,20 @@ from core.data_models import Group
 
 Builder.load_file(path.join(path.dirname(__file__), 'kv', 'groupstab.kv'))
 
+class GroupPopupSectionSessionEntry(RecycleDataViewBehavior, BoxLayout):
+    section_session = ObjectProperty()
+
+    def refresh_view_attrs(self, rv, index, data):
+        self.section_session = data['section_session']
+        return super(GroupPopupSectionSessionEntry, self).refresh_view_attrs(rv, index, data)
+
+class GroupPopupSectionEntry(RecycleDataViewBehavior, BoxLayout):
+    group_section = ObjectProperty()
+
+    def refresh_view_attrs(self, rv, index, data):
+        self.group_section = data['group_section']
+        return super(GroupPopupSectionEntry, self).refresh_view_attrs(rv, index, data)
+
 class GroupPopupGroupSessionEntry(RecycleDataViewBehavior, BoxLayout):
     session = ObjectProperty()
 
@@ -30,7 +44,7 @@ class GroupPopup(Popup):
             c['name'] for c in App.get_running_app().classrooms
         ]
 
-        self.ids.sessions.data= [
+        self.ids.group_sessions.data = [
             { 'session': session } \
                 for session in App.get_running_app().sessions \
                 if session.id in self.group.session_ids
@@ -51,6 +65,45 @@ class GroupPopup(Popup):
         self.ids.sessions.data.append({ 'session': session })
         self.ids.session.values.remove(session_name)
 
+    def add_section(self, section_name):
+        section_id = random.random()
+        new_section = Group(
+            id=int(group.id) + section_id,
+            major=0,
+            year=0,
+            specialization='',
+            group_name=f'{group.group_name} - {section_name}',
+            section=f'{section_id}',
+            session_ids=[],
+        )
+
+        self.ids.sections.data.append({ 'group_section': new_section })
+        App.get_running_app().groups.append(new_section)
+
+    def add_session_to_section(self, section_name, session_name, session_type):
+        section = list(filter(
+            lambda s: s.group_name == section_name,
+            App.get_running_app().groups
+        ))
+
+        session = list(filter(
+            lambda s: s.name == session_name and s.section_type == section_name.lower(),
+            App.get_running_app().session
+        ))
+
+        if len(section) != 1 or len(session) != 1:
+            return
+
+        session, section = session[0], section[0]
+
+        section.session_ids.append(session.id)
+
+    def select_section(self, section_name):
+        print('='*30)
+        print(App.get_running_app().groups)
+        print(section_name)
+        print('='*30)
+
 class GroupEntry(RecycleDataViewBehavior, BoxLayout):
     group = ObjectProperty()
 
@@ -62,7 +115,7 @@ class GroupEntry(RecycleDataViewBehavior, BoxLayout):
     def delete_group(self):
         groups_to_be_removed = [self.group]
         groups_to_be_removed.extend(filter(
-            lambda g: int(g.id) == int(self.group),
+            lambda g: int(g.id) == int(self.group.id),
             App.get_running_app().groups,
         ))
 
@@ -86,3 +139,9 @@ class GroupsTab(BoxLayout):
 
         App.get_running_app().groups.append(new_group)
         self.ids.groups.data.append({ 'group': new_group })
+
+    def refresh_groups(self):
+        self.ids.groups.data = list(filter(
+            lambda g: g.section == '0',
+            App.get_running_app().groups
+        ))
