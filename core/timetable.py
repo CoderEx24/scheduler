@@ -5,31 +5,16 @@ from typing import List
 from .data_models import Room, Instructor, Session, Group, Class, TimeRange
 
 class TimeTable:
-    def __init__(self):
-        self.rooms: List[Room] = []
-        self.instructors: List[Instructor] = []
-        self.sessions: List[Session] = []
-        self.groups: List[Group] = []
+    def __init__(self, *, rooms=None, instructor=None, sessions=None, groups=None):
+        self.rooms: List[Room] = rooms or []
+        self.instructors: List[Instructor] = instructor or []
+        self.sessions: List[Session] = sessions or []
+        self.groups: List[Group] = groups or []
         self.classes: List[Class] = []
 
-        self.load_data_from_files()
-
-    def load_data_from_files(self):
-        base_dir = os.path.dirname(os.path.abspath(__file__)) + '/../etc/'
-
-        rooms_file = os.path.join(base_dir, 'input_data/rooms.json')
-        instructors_file = os.path.join(base_dir, 'input_data/instructors.json')
-        sessions_file = os.path.join(base_dir, 'input_data/sessions.json')
-        groups_file = os.path.join(base_dir, 'input_data/groups.json')
-
-        with open(rooms_file, 'r') as f:
+    def load_rooms_from_file(self, filename):
+        with open(filename, 'r') as f:
             rooms_data = json.load(f)
-        with open(instructors_file, 'r') as f:
-            instructors_data = json.load(f)
-        with open(sessions_file, 'r') as f:
-            sessions_data = json.load(f)
-        with open(groups_file, 'r') as f:
-            groups_data = json.load(f)
 
         # Initialize Rooms
         for room in rooms_data:
@@ -39,6 +24,10 @@ class TimeTable:
                 capacity=room['capacity'],
                 room_type=room['room_type']
             ))
+
+    def load_instructors_from_file(self, filename):
+        with open(instructors_file, 'r') as f:
+            instructors_data = json.load(f)
 
         # Initialize Instructors
         instructor_objs = []
@@ -57,6 +46,10 @@ class TimeTable:
             ))
         self.instructors = instructor_objs
 
+    def load_sessions_from_file(self, filename):
+        with open(sessions_file, 'r') as f:
+            sessions_data = json.load(f)
+
         # Initialize Sessions
         for session in sessions_data:
             # duration given directly in slots, no conversion needed
@@ -70,6 +63,11 @@ class TimeTable:
                 duration=session['duration']  # already in slots
             ))
 
+
+    def load_groups_from_file(self, filename):
+        with open(groups_file, 'r') as f:
+            groups_data = json.load(f)
+
         # Initialize Groups
         for group in groups_data:
             self.groups.append(Group(
@@ -82,3 +80,4 @@ class TimeTable:
                 size=group['size'],
                 session_ids=group['session_ids']
             ))
+
