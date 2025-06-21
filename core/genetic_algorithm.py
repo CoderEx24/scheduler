@@ -22,11 +22,11 @@ class GeneticAlgorithm:
         self.slots_per_day = 8
         self.time_slots = [(day, s) for day in self.days_of_week for s in range(self.slots_per_day)]
 
-        # class_mappings is a list of tuples (group_id, course_id) for each class that must be scheduled
+        # class_mappings is a list of tuples (group_id, session_id) for each class that must be scheduled
         self.class_mappings = []
         for group in self.timetable.groups:
-            for course_id in group.course_ids:
-                self.class_mappings.append((group.id, course_id))
+            for session_id in group.session_ids:
+                self.class_mappings.append((group.id, session_id))
 
     def run(self) -> List[Class]:
         # Initialize population
@@ -91,16 +91,16 @@ class GeneticAlgorithm:
     def create_individual(self) -> List[int]:
         # Create a random feasible-ish individual
         instructors = {i.id: i for i in self.timetable.instructors}
-        courses = {c.id: c for c in self.timetable.courses}
+        sessions = {c.id: c for c in self.timetable.sessions}
         groups = {g.id: g for g in self.timetable.groups}
 
         chromosome = []
-        for (group_id, course_id) in self.class_mappings:
-            course = courses[course_id]
+        for (group_id, session_id) in self.class_mappings:
+            session = sessions[session_id]
             group = groups[group_id]
-            duration_slots = course.duration
+            duration_slots = session.duration
 
-            instructor_id = random.choice(course.allowed_instructors)
+            instructor_id = random.choice(session.allowed_instructors)
             instructor = instructors[instructor_id]
 
             feasible_indices = []
@@ -115,7 +115,7 @@ class GeneticAlgorithm:
             else:
                 timeslot_idx = random.choice(feasible_indices)
 
-            room_id = self.select_most_efficient_room(course.required_room_type, group.size)
+            room_id = self.select_most_efficient_room(session.required_room_type, group.size)
             chromosome.extend([timeslot_idx, room_id, instructor_id])
         return chromosome
 
@@ -128,10 +128,10 @@ class GeneticAlgorithm:
                 return False
         return True
 
-    def select_most_efficient_room(self, course_required_type: str, group_size: int) -> int:
+    def select_most_efficient_room(self, session_required_type: str, group_size: int) -> int:
         suitable_rooms = [
             room for room in self.timetable.rooms
-            if room.room_type == course_required_type and room.capacity >= group_size
+            if room.room_type == session_required_type and room.capacity >= group_size
         ]
         if not suitable_rooms:
             return random.choice([r.id for r in self.timetable.rooms])
@@ -156,9 +156,9 @@ class GeneticAlgorithm:
         classes = []
         gene_idx = 0
         class_id = 1
-        for (group_id, course_id) in self.class_mappings:
-            course = next(c for c in self.timetable.courses if c.id == course_id)
-            duration_slots = course.duration
+        for (group_id, session_id) in self.class_mappings:
+            session = next(c for c in self.timetable.sessions if c.id == session_id)
+            duration_slots = session.duration
 
             timeslot_idx = chromosome[gene_idx]
             room_id = chromosome[gene_idx+1]
@@ -173,7 +173,7 @@ class GeneticAlgorithm:
             classes.append(Class(
                 id=class_id,
                 group_id=group_id,
-                course_id=course_id,
+                session_id=session_id,
                 instructor_id=instructor_id,
                 room_id=room_id,
                 day=day,
@@ -185,7 +185,7 @@ class GeneticAlgorithm:
 
     def count_clashes(self, classes: List[Class]) -> int:
         groups = {g.id: g for g in self.timetable.groups}
-        courses = {c.id: c for c in self.timetable.courses}
+        sessions = {c.id: c for c in self.timetable.sessions}
         rooms = {r.id: r for r in self.timetable.rooms}
         instructors = {i.id: i for i in self.timetable.instructors}
 
@@ -197,7 +197,7 @@ class GeneticAlgorithm:
         clashes = 0
         for i, c1 in enumerate(classes):
             g1 = groups[c1.group_id]
-            co1 = courses[c1.course_id]
+            co1 = sessions[c1.session_id]
             r1 = rooms[c1.room_id]
             in1 = instructors[c1.instructor_id]
             s1 = get_slot_range(c1)
@@ -289,8 +289,8 @@ class GeneticAlgorithm:
     def classes_to_chromosome(self, classes: List[Class]) -> List[int]:
         gene_length = 3
         chromosome = [0]*(len(self.class_mappings)*gene_length)
-        for i, (group_id, course_id) in enumerate(self.class_mappings):
-            cl = next(c for c in classes if c.group_id == group_id and c.course_id == course_id)
+        for i, (group_id, session_id) in enumerate(self.class_mappings):
+            cl = next(c for c in classes if c.group_id == group_id and c.session_id == session_id)
             day = cl.day
             start_slot = int(cl.time_range.start_time.split()[1]) - 1
             timeslot_idx = self.time_slots.index((day, start_slot))
@@ -302,7 +302,7 @@ class GeneticAlgorithm:
 
     def identify_clashes(self, classes: List[Class]) -> Dict[int, List[str]]:
         groups = {g.id: g for g in self.timetable.groups}
-        courses = {c.id: c for c in self.timetable.courses}
+        sessions = {c.id: c for c in self.timetable.sessions}
         rooms = {r.id: r for r in self.timetable.rooms}
         instructors = {i.id: i for i in self.timetable.instructors}
 
@@ -320,7 +320,7 @@ class GeneticAlgorithm:
 
         for i, c1 in enumerate(classes):
             g1 = groups[c1.group_id]
-            co1 = courses[c1.course_id]
+            co1 = sessions[c1.session_id]
             r1 = rooms[c1.room_id]
             in1 = instructors[c1.instructor_id]
             s1 = get_slot_range(c1)
@@ -385,17 +385,17 @@ class GeneticAlgorithm:
         gene_idx = class_idx * 3
         original = (chromosome[gene_idx], chromosome[gene_idx+1], chromosome[gene_idx+2])
 
-        group_id, course_id = self.class_mappings[class_idx]
-        course = next(c for c in self.timetable.courses if c.id == course_id)
+        group_id, session_id = self.class_mappings[class_idx]
+        session = next(c for c in self.timetable.sessions if c.id == session_id)
         group = next(g for g in self.timetable.groups if g.id == group_id)
-        duration_slots = course.duration
+        duration_slots = session.duration
 
         instructors = {i.id: i for i in self.timetable.instructors}
 
         best_fitness = self.calculate_fitness(chromosome)
         improved = False
 
-        for new_instructor_id in course.allowed_instructors:
+        for new_instructor_id in session.allowed_instructors:
             in_obj = instructors[new_instructor_id]
             feasible_slots = []
             for t_idx, (day, s_idx) in enumerate(self.time_slots):
@@ -403,7 +403,7 @@ class GeneticAlgorithm:
                     if s_idx + duration_slots <= self.slots_per_day:
                         feasible_slots.append(t_idx)
             for new_t_idx in feasible_slots:
-                new_room_id = self.select_most_efficient_room(course.required_room_type, group.size)
+                new_room_id = self.select_most_efficient_room(session.required_room_type, group.size)
                 chromosome[gene_idx] = new_t_idx
                 chromosome[gene_idx+1] = new_room_id
                 chromosome[gene_idx+2] = new_instructor_id
@@ -438,15 +438,15 @@ class GeneticAlgorithm:
         gene_length = 3
         num_classes = len(mutated) // gene_length
         instructors = {i.id: i for i in self.timetable.instructors}
-        courses = {c.id: c for c in self.timetable.courses}
+        sessions = {c.id: c for c in self.timetable.sessions}
         groups = {g.id: g for g in self.timetable.groups}
 
         for class_idx in range(num_classes):
             idx = class_idx * gene_length
-            group_id, course_id = self.class_mappings[class_idx]
+            group_id, session_id = self.class_mappings[class_idx]
             group = groups[group_id]
-            course = courses[course_id]
-            duration_slots = course.duration
+            session = sessions[session_id]
+            duration_slots = session.duration
 
             if random.random() < self.mutation_rate:
                 instructor_id = mutated[idx+2]
@@ -460,9 +460,9 @@ class GeneticAlgorithm:
                     mutated[idx] = random.choice(feasible_indices)
 
             if random.random() < self.mutation_rate:
-                mutated[idx+1] = self.select_most_efficient_room(course.required_room_type, group.size)
+                mutated[idx+1] = self.select_most_efficient_room(session.required_room_type, group.size)
 
             if random.random() < self.mutation_rate:
-                mutated[idx+2] = random.choice(course.allowed_instructors)
+                mutated[idx+2] = random.choice(session.allowed_instructors)
 
         return mutated

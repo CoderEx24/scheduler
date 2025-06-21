@@ -52,8 +52,8 @@ for day, day_df in grouped:
     <table>
         <tr>
             <th>Time</th>
-            <th>Course Code</th>
-            <th>Course Name</th>
+            <th>Session Code</th>
+            <th>Session Name</th>
             <th>Session Type</th>
             <th>Group</th>
             <th>Room</th>
@@ -64,8 +64,8 @@ for day, day_df in grouped:
         html_content += f'''
         <tr>
             <td>{row["time"]}</td>
-            <td>{row["course_code"]}</td>
-            <td>{row["course_name"]}</td>
+            <td>{row["session_code"]}</td>
+            <td>{row["session_name"]}</td>
             <td>{row["session_type"]}</td>
             <td>{row["group"]}</td>
             <td>{row["room"]}</td>

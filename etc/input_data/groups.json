@@ -8,7 +8,7 @@
     "section": "0", 
     "comment": "when section has a value of 0, it means that this is the main group else its a section(sub group) ",
     "size": 75,
-    "course_ids": [1,4,7,10,13]
+    "session_ids": [1,4,7,10,13]
   },
   {
     "id": 4.1,
@@ -19,7 +19,7 @@
     "section": "1",
     "comment": "when section has a value of 0, it means that this is the main group else its a section(sub group) ",
     "size": 25,
-    "course_ids": [2,3,5,6,8,9,11,12,14,15]
+    "session_ids": [2,3,5,6,8,9,11,12,14,15]
   },
   {
     "id": 4.2,
@@ -30,7 +30,7 @@
     "section": "2",
     "comment": "when section has a value of 0, it means that this is the main group else its a section(sub group) ",
     "size": 25,
-    "course_ids": [2,3,5,6,8,9,11,12,14,15]
+    "session_ids": [2,3,5,6,8,9,11,12,14,15]
   },
   {
     "id": 4.3,
@@ -41,7 +41,7 @@
     "section": "3",
     "comment": "when section has a value of 0, it means that this is the main group else its a section(sub group) ",
     "size": 25,
-    "course_ids": [2,3,5,6,8,9,11,12,14,15]
+    "session_ids": [2,3,5,6,8,9,11,12,14,15]
   },
   {
     "id": 5.0,
@@ -52,7 +52,7 @@
     "section": "0",
     "comment": "when section has a value of 0, it means that this is the main group else its a section(sub group) ",
     "size": 50,
-    "course_ids": [1,4,7,10,13]
+    "session_ids": [1,4,7,10,13]
   },
   {
     "id": 5.1,
@@ -63,7 +63,7 @@
     "section": "1",
     "comment": "when section has a value of 0, it means that this is the main group else its a section(sub group) ",
     "size": 25,
-    "course_ids": [2,3,5,6,8,9,11,12,14,15]
+    "session_ids": [2,3,5,6,8,9,11,12,14,15]
   },
   {
     "id": 5.2,
@@ -74,6 +74,6 @@
     "section": "2",
     "comment": "when section has a value of 0, it means that this is the main group else its a section(sub group)",
     "size": 25,
-    "course_ids": [2,3,5,6,8,9,11,12,14,15]
+    "session_ids": [2,3,5,6,8,9,11,12,14,15]
   }
 ]

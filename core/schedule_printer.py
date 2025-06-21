@@ -21,14 +21,14 @@ def print_schedule(timetable: TimeTable, classes: List[Class]):
     for class_ in sorted_classes:
         room = next(r for r in timetable.rooms if r.id == class_.room_id)
         instructor = next(i for i in timetable.instructors if i.id == class_.instructor_id)
-        course = next(c for c in timetable.courses if c.id == class_.course_id)
+        session = next(c for c in timetable.sessions if c.id == class_.session_id)
         group = next(g for g in timetable.groups if g.id == class_.group_id)
         if current_day != class_.day:
             current_day = class_.day
             print(f"\n{current_day}")
             print("-" * 100)
         print(f"Slots: {class_.time_range.start_time}-{class_.time_range.end_time} | "
-              f"Course: {course.code} ({course.name}) [{course.session_type}] | "
+              f"Session: {session.code} ({session.name}) [{session.session_type}] | "
               f"Group: {group.major} Year {group.year} {group.group_name}-{group.section} | "
               f"Room: {room.number} | "
               f"Instructor: {instructor.name} ({instructor.type})")
@@ -38,14 +38,14 @@ def print_schedule(timetable: TimeTable, classes: List[Class]):
     for class_ in sorted_classes:
         room = next(r for r in timetable.rooms if r.id == class_.room_id)
         instructor = next(i for i in timetable.instructors if i.id == class_.instructor_id)
-        course = next(c for c in timetable.courses if c.id == class_.course_id)
+        session = next(c for c in timetable.sessions if c.id == class_.session_id)
         group = next(g for g in timetable.groups if g.id == class_.group_id)
         schedule_output.append({
             'day': class_.day,
             'slots': f"{class_.time_range.start_time}-{class_.time_range.end_time}",
-            'course_code': course.code,
-            'course_name': course.name,
-            'session_type': course.session_type,
+            'session_code': session.code,
+            'session_name': session.name,
+            'session_type': session.session_type,
             'group': f"{group.major} Year {group.year} {group.group_name}-{group.section}",
             'room': room.number,
             'instructor': instructor.name,

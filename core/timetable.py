@@ -2,13 +2,13 @@
 import json
 import os
 from typing import List
-from .data_models import Room, Instructor, Course, Group, Class, TimeRange
+from .data_models import Room, Instructor, Session, Group, Class, TimeRange
 
 class TimeTable:
     def __init__(self):
         self.rooms: List[Room] = []
         self.instructors: List[Instructor] = []
-        self.courses: List[Course] = []
+        self.sessions: List[Session] = []
         self.groups: List[Group] = []
         self.classes: List[Class] = []
 
@@ -19,15 +19,15 @@ class TimeTable:
 
         rooms_file = os.path.join(base_dir, 'input_data/rooms.json')
         instructors_file = os.path.join(base_dir, 'input_data/instructors.json')
-        courses_file = os.path.join(base_dir, 'input_data/courses.json')
+        sessions_file = os.path.join(base_dir, 'input_data/sessions.json')
         groups_file = os.path.join(base_dir, 'input_data/groups.json')
 
         with open(rooms_file, 'r') as f:
             rooms_data = json.load(f)
         with open(instructors_file, 'r') as f:
             instructors_data = json.load(f)
-        with open(courses_file, 'r') as f:
-            courses_data = json.load(f)
+        with open(sessions_file, 'r') as f:
+            sessions_data = json.load(f)
         with open(groups_file, 'r') as f:
             groups_data = json.load(f)
 
@@ -57,17 +57,17 @@ class TimeTable:
             ))
         self.instructors = instructor_objs
 
-        # Initialize Courses
-        for course in courses_data:
+        # Initialize Sessions
+        for session in sessions_data:
             # duration given directly in slots, no conversion needed
-            self.courses.append(Course(
-                id=course['id'],
-                code=course['code'],
-                name=course['name'],
-                required_room_type=course['required_room_type'],
-                allowed_instructors=course['allowed_instructors'],
-                session_type=course['session_type'],
-                duration=course['duration']  # already in slots
+            self.sessions.append(Session(
+                id=session['id'],
+                code=session['code'],
+                name=session['name'],
+                required_room_type=session['required_room_type'],
+                allowed_instructors=session['allowed_instructors'],
+                session_type=session['session_type'],
+                duration=session['duration']  # already in slots
             ))
 
         # Initialize Groups
@@ -80,5 +80,5 @@ class TimeTable:
                 group_name=group['group_name'],
                 section=group['section'],
                 size=group['size'],
-                course_ids=group['course_ids']
+                session_ids=group['session_ids']
             ))
