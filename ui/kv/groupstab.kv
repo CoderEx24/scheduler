@@ -1,12 +1,66 @@
+#: import Factory kivy.factory.Factory
+
+<GroupPopupSessionEntry>:
+  Label:
+    id: session_name
+    size_hint_x: 10
+
+  Button:
+    text: 'Remove'
+    size_hint_x: 2
+
+<GroupPopup>:
+  title: 'Add Sessions to Group'
+  auto_dismiss: False
+
+  BoxLayout:
+    orientation: 'vertical'
+
+    BoxLayout:
+      size_hint_y: 1
+      Spinner:
+        id: session
+        text: 'Classroom'
+        size_hint_x: 9
+
+      Spinner:
+        id: session_type
+        text: 'Session Type'
+        size_hint_x: 4
+        values: 'Lecture', 'Tutorial', 'Lab'
+
+      Button:
+        text: 'Add'
+        size_hint_x: 1
+        on_press: root.add_session(session.text, session_type.text)
+
+    RecycleView:
+      id: sessions
+      viewclass: 'GroupPopupSessionEntry'
+      size_hint_y: 10
+
+      RecycleBoxLayout:
+        default_size: None, dp(56)
+        default_size_hint: 1, None
+        size_hint_y: None
+        height: self.minimum_height
+        orientation: 'vertical'
+
+    Button:
+      text: 'Save'
+      on_press:
+        if root.save(): root.dismiss()
+
+
 <GroupEntry>:
   Label:
     id: group_name
     size_hint_x: 7
 
   Button:
-    text: 'Edit\nGroup'
+    text: 'Add Sessions\nto Group'
     size_hint_x: 2
-    on_press: root.edit_group()
+    on_press: Factory.GroupPopup(root.group).open()
 
   Button:
     text: 'Delete\nGroup'
