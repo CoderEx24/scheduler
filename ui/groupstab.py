@@ -6,18 +6,19 @@ from kivy.factory import Factory
 from kivy.lang import Builder
 from kivy.app import App
 from os import path
+import random
 
 from core.data_models import Group
 
 Builder.load_file(path.join(path.dirname(__file__), 'kv', 'groupstab.kv'))
 
-class GroupPopupSessionEntry(RecycleDataViewBehavior, BoxLayout):
+class GroupPopupGroupSessionEntry(RecycleDataViewBehavior, BoxLayout):
     session = ObjectProperty()
 
     def refresh_view_attrs(self, rv, index, data):
         self.session = data['session']
         self.ids.session_name.text = self.session.name
-        return super(GroupPopupSessionEntry, self).refresh_view_attrs(rv, index, data)
+        return super(GroupPopupGroupSessionEntry, self).refresh_view_attrs(rv, index, data)
 
 class GroupPopup(Popup):
     group = ObjectProperty()
@@ -35,9 +36,9 @@ class GroupPopup(Popup):
                 if session.id in self.group.session_ids
         ]
 
-    def add_session(self, session, session_type):
+    def add_lecture_session(self, session_name):
         session = list(filter(
-            lambda d: d.name == session and d.session_type == session_type.lower(),
+            lambda d: d.name == session_name and d.session_type == 'lecture',
             App.get_running_app().sessions
         ))
 
@@ -46,12 +47,9 @@ class GroupPopup(Popup):
 
         session = session[0]
 
-        print(session)
         self.group.session_ids.append(session.id)
         self.ids.sessions.data.append({ 'session': session })
-
-    def save(self):
-        return True
+        self.ids.session.values.remove(session_name)
 
 class GroupEntry(RecycleDataViewBehavior, BoxLayout):
     group = ObjectProperty()
@@ -62,19 +60,27 @@ class GroupEntry(RecycleDataViewBehavior, BoxLayout):
         return super(GroupEntry, self).refresh_view_attrs(rv, index, data)
 
     def delete_group(self):
-        App.get_running_app().groups.remove(self.group)
+        groups_to_be_removed = [self.group]
+        groups_to_be_removed.extend(filter(
+            lambda g: int(g.id) == int(self.group),
+            App.get_running_app().groups,
+        ))
+
+        for g in groups_to_be_removed:
+            App.get_running_app().groups.remove(g)
+
         self.parent.parent.data.remove({ 'group': self.group })
 
 class GroupsTab(BoxLayout):
-    def create_group(self, group_name, section, size):
+    def create_group(self, group_name):
         new_group = Group(
-                id=0.0,
+                id=float(random.randint(1, 10**6)),
                 major='',
                 year=0,
                 specialization='',
                 group_name=group_name,
-                section=section,
-                size=size,
+                section=0,
+                size=0,
                 session_ids=[],
             )
 
