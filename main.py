@@ -8,6 +8,7 @@ from core.data_models import *
 class MainApp(App):
     classrooms = ListProperty()
     professors = ListProperty()
+    sessions = ListProperty()
 
     def fetch_professors(self):
         try:
@@ -35,16 +36,31 @@ class MainApp(App):
                 .json()
         except:
             pass
+        else:
+            self.classrooms = list([
+                {**clrm, 'name': f'{clrm['course']['title']} by {clrm['instructor']['first_name']} {clrm['instructor']['last_name']}' }
+                for clrm in self.classrooms
+            ])
 
-    def on_start(self):
+            import random
+            self.sessions.extend([
+                Session(
+                    id=random.randint(1, 10**6),
+                    code='CODE',
+                    name=clrm['name'],
+                    required_room_type='classroom',
+                    allowed_instructors=[clrm['instructor']['id']],
+                    session_type='lecture',
+                    duration=0,
+                )
+                for clrm in self.classrooms
+            ])
+
+    def build(self):
         self.fetch_professors()
         self.fetch_classrooms()
 
-
-        print(f'there are {len(self.classrooms)} classrooms and {len(self.professors)} professors')
-        print(self.classrooms)
-        print(self.professors)
-
+        return super(MainApp, self).build()
 
 if __name__ == '__main__':
     MainApp().run()
