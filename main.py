@@ -8,7 +8,9 @@ from core.data_models import *
 class MainApp(App):
     classrooms = ListProperty()
     professors = ListProperty()
+
     sessions = ListProperty()
+    groups = ListProperty()
 
     def fetch_professors(self):
         try:

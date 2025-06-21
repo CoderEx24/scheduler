@@ -4,12 +4,12 @@
     size_hint_x: 7
 
   Button:
-    name: 'Edit\nGroup'
+    text: 'Edit\nGroup'
     size_hint_x: 2
     on_press: root.edit_group()
 
   Button:
-    name: 'Delete\nGroup'
+    text: 'Delete\nGroup'
     size_hint_x: 2
     on_press: root.delete_group()
 
@@ -28,12 +28,18 @@
       hint_text: 'Section Number'
       size_hint_x: 2
 
+    TextInput:
+      id: size
+      hint_text: 'Size'
+      size_hint_x: 2
+
     Button:
       text: 'Add\nGroup'
       size_hint_x: 2
-      on_press: root.create_group(group_name.text, group_section.text)
+      on_press: root.create_group(group_name.text, group_section.text, size.text)
 
   RecycleView:
+    id: groups
     size_hint_y: 10
     viewclass: 'GroupEntry'
 

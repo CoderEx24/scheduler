@@ -1,22 +1,41 @@
 from kivy.uix.recycleview.views import RecycleDataViewBehavior
-from kivy.properties import StringProperty
+from kivy.properties import StringProperty, ObjectProperty
 from kivy.uix.boxlayout import BoxLayout
 from kivy.lang import Builder
 from kivy.app import App
 from os import path
 
+from core.data_models import Group
+
 Builder.load_file(path.join(path.dirname(__file__), 'kv', 'groupstab.kv'))
 
 class GroupEntry(RecycleDataViewBehavior, BoxLayout):
-    def refreash_view_attrs(self, rv, index, data):
+    group = ObjectProperty()
+
+    def refresh_view_attrs(self, rv, index, data):
+        self.group = data['group']
+        self.ids.group_name.text = self.group.group_name
         return super(GroupEntry, self).refresh_view_attrs(rv, index, data)
 
     def edit_group(self):
         pass
 
     def delete_group(self):
-        pass
+        App.get_running_app().groups.remove(self.group)
+        self.parent.parent.data.remove({ 'group': self.group })
 
 class GroupsTab(BoxLayout):
-    def create_group(self, group_name, section):
-        pass
+    def create_group(self, group_name, section, size):
+        new_group = Group(
+                id=0.0,
+                major='',
+                year=0,
+                specialization='',
+                group_name=group_name,
+                section=section,
+                size=size,
+                session_ids=[],
+            )
+
+        App.get_running_app().groups.append(new_group)
+        self.ids.groups.data.append({ 'group': new_group })
