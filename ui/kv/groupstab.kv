@@ -1,0 +1,46 @@
+<GroupEntry>:
+  Label:
+    id: group_name
+    size_hint_x: 7
+
+  Button:
+    name: 'Edit\nGroup'
+    size_hint_x: 2
+    on_press: root.edit_group()
+
+  Button:
+    name: 'Delete\nGroup'
+    size_hint_x: 2
+    on_press: root.delete_group()
+
+<GroupsTab>:
+  orientation: 'vertical'
+
+  BoxLayout:
+    TextInput:
+      id: group_name
+      hint_text: 'Group name'
+      size_hint_x: 7
+      multiline: False
+
+    TextInput:
+      id: group_section
+      hint_text: 'Section Number'
+      size_hint_x: 2
+
+    Button:
+      text: 'Add\nGroup'
+      size_hint_x: 2
+      on_press: root.create_group(group_name.text, group_section.text)
+
+  RecycleView:
+    size_hint_y: 10
+    viewclass: 'GroupEntry'
+
+    RecycleBoxLayout:
+      default_size: None, dp(56)
+      default_size_hint: 1, None
+      size_hint_y: None
+      height: self.minimum_height
+      orientation: 'vertical'
+
