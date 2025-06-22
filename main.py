@@ -4,11 +4,13 @@ import requests
 from ui import *
 
 from core.data_models import *
+from core.timetable import TimeTable
+from core.genetic_algorithm import GeneticAlgorithm
 
 class MainApp(App):
     classrooms = ListProperty()
-    professors = ListProperty()
 
+    professors = ListProperty()
     sessions = ListProperty()
     groups = ListProperty()
 
@@ -57,6 +59,19 @@ class MainApp(App):
                 )
                 for clrm in self.classrooms
             ])
+
+    def generate_table(self):
+        timetable = TimeTable(
+            instructor=self.professors[:],
+            sessions=self.sessions[:],
+            groups=self.groups[:]
+        )
+
+        timetable.load_rooms_from_file('./etc/input_data/rooms.json')
+        ga = GeneticAlgorithm(timetable)
+        solution = ga.run()
+
+        print(solution)
 
     def build(self):
         self.fetch_professors()
