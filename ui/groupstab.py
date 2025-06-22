@@ -86,6 +86,7 @@ class GroupPopup(Popup):
         session = session[0]
 
         self.group.session_ids.append(session.id)
+
         self.ids.group_sessions.data.append({ 'session': session })
         self.ids.group_session.values.remove(session_name)
 
@@ -100,7 +101,7 @@ class GroupPopup(Popup):
             specialization='',
             group_name=f'{self.group.group_name} - {section_name}',
             section=compound_id,
-            session_ids=[],
+            session_ids=[*self.group.session_ids],
             size=int(section_size),
         )
 
