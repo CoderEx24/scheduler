@@ -90,6 +90,15 @@ class GroupPopup(Popup):
         self.ids.group_sessions.data.append({ 'session': session })
         self.ids.group_session.values.remove(session_name)
 
+        group_sections = filter(
+            lambda gs: int(gs.id) == int(self.group.id),
+            App.get_running_app().groups
+        )
+
+        for gs in group_sections:
+            if session.id not in gs.session_ids:
+                gs.session_ids.append(session.id)
+
     def add_section(self, section_name, section_size):
         section_id = random.randint(1, 1000)
         compound_id = f'{int(self.group.id)}.{section_id}'
