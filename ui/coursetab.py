@@ -12,6 +12,7 @@ from core.data_models import Session
 Builder.load_file(path.join(path.dirname(__file__), 'kv', 'coursetab.kv'))
 
 class ClassroomEntry(RecycleDataViewBehavior, BoxLayout):
+
     def refresh_view_attrs(self, rv, index, data):
         self.ids.session_type.text = data['session'].session_type
         self.ids.session_name.text = data['session'].name
@@ -66,7 +67,7 @@ class CoursesTab(BoxLayout):
             id=random.randint(1, 10**6),
             code='CODE',
             name=self.selected_classroom['name'],
-            session_type=self.session_type,
+            session_type=self.session_type.lower(),
             required_room_type=self.room_type,
             allowed_instructors=[],
             duration=0,

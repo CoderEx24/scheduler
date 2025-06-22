@@ -14,14 +14,12 @@
 <CoursesTab>:
   orientation: 'vertical'
 
-  __safe_id: [classroom.__self__, session_type.__self__, room_type.__self__]
+  __safe_id: [classroom.__self__]
 
   Widget:
     size_hint: 0, 0
     on_parent: 
-      session_type.dismiss()
       classroom.dismiss()
-      room_type.dismiss()
       
   BoxLayout:
     TextInput:
@@ -46,72 +44,21 @@
       id: classroom
       size_hint_x: 7
       on_select: root.selected_classroom = args[1]; classroom_btn.text = args[1]['name'] if args[1] else ''
-      
-    Button:
-      id: session_type_btn 
-      text: self.text or 'Session'
-      on_release: session_type.open(self)
-      size_hint: 3, None
-      height: '48dp'
 
-    DropDown:
-      id: session_type
+    Spinner:
+      # id: session_type
+      text: 'Session Type'
       size_hint_x: 3
-      on_select: root.session_type = session_type_btn.text = args[1]
-      
-      Button:
-        text: 'Lecture'
-        size_hint_y: None
-        height: '48dp'
-        on_release: session_type.select('Lecture')
+      values: 'Lecture', 'Tutorial', 'Lab'
+      on_text: root.session_type = self.text
 
-      Button:
-        text: 'Tutorial'
-        size_hint_y: None
-        height: '48dp'
-        on_release: session_type.select('Tutorial')
-
-      Button:
-        text: 'Lab'
-        size_hint_y: None
-        height: '48dp'
-        on_release: session_type.select('Lab')
-
-    Button:
-      id: room_type_btn 
-      text: self.text or 'Room Type'
-      on_release: room_type.open(self)
-      size_hint: 3, None
-      height: '48dp'
-
-    DropDown:
-      id: room_type
+    Spinner:
+      # id: room_type
+      text: 'Room Type'
       size_hint_x: 3
-      on_select: root.room_type = room_type_btn.text = args[1]
+      values: 'classroom', 'computer_lab'
+      on_text: root.room_type = self.text
 
-      Button:
-        text: 'Classroom'
-        size_hint_y: None
-        height: '48dp'
-        on_release: room_type.select('session')
-
-      Button:
-        text: 'Computer Lab'
-        size_hint_y: None
-        height: '48dp'
-        on_release: room_type.select('computer_lab')
-
-      Button:
-        text: 'Physics Lab'
-        size_hint_y: None
-        height: '48dp'
-        on_release: room_type.select('physics_lab')
-
-      Button:
-        text: 'Chemistry Lab'
-        size_hint_y: None
-        height: '48dp'
-        on_release: room_type.select('chemistry_lab')
 
     Button:
       text: 'Add'
