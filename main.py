@@ -6,6 +6,7 @@ from ui import *
 from core.data_models import *
 from core.timetable import TimeTable
 from core.genetic_algorithm import GeneticAlgorithm
+from core.schedule_printer import print_schedule
 
 class MainApp(App):
     classrooms = ListProperty()
@@ -71,7 +72,7 @@ class MainApp(App):
         ga = GeneticAlgorithm(timetable)
         solution = ga.run()
 
-        print(solution)
+        print_schedule(timetable, solution)
 
     def build(self):
         self.fetch_professors()
