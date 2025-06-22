@@ -12,5 +12,22 @@ FloatLayout:
     TabbedPanelItem:
       text: 'Groups'
 
+      GroupsTab:
+
     TabbedPanelItem:
       text: 'Rooms'
+
+    TabbedPanelItem:
+      text: 'Generate\nTimetable'
+      size_hint_x: 5
+
+      BoxLayout:
+        orientation: 'vertical'
+
+        Button:
+          text: 'Generate Table'
+          size_hint_y: 1
+          on_press: app.generate_table()
+
+        Widget:
+          size_hint_y: 10
